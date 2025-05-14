@@ -1,6 +1,7 @@
 import { toast } from "@/components/ui/use-toast"
 
-const BASE_URL = "https://intellecta-server-h5ug.onrender.com/api/v1"
+// const BASE_URL = "https://intellecta-server-h5ug.onrender.com/api/v1"
+const BASE_URL = "http://localhost:5000/api/v1"
 
 export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem("intellecta-token")
@@ -191,5 +192,17 @@ export const usersApi = {
     fetchWithAuth("/users/me", {
       method: "PATCH",
       body: JSON.stringify(data),
+    }),
+  // Admin endpoints:
+  getAll: () => fetchWithAuth("/users"),
+  getById: (id: string) => fetchWithAuth(`/users/${id}`),
+  update: (id: string, data: any) =>
+    fetchWithAuth(`/users/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    fetchWithAuth(`/users/${id}`, {
+      method: "DELETE",
     }),
 }
