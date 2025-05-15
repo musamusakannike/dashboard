@@ -87,11 +87,6 @@ export default function ReviewsPage() {
     }
 
     try {
-      await reviewsApi.delete(id)\
-      setReviews(reviews.filter((review  
-      return
-
-    try {
       await reviewsApi.delete(id)
       setReviews(reviews.filter((review) => review._id !== id))
     } catch (err) {
