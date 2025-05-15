@@ -32,7 +32,6 @@ export default function UsersPage() {
       try {
         setIsLoading(true)
         const data = await usersApi.getAll()
-        console.log("data", JSON.stringify(data, null, 2))
         let usersArray = []
         if (Array.isArray(data)) {
           usersArray = data
