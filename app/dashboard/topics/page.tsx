@@ -133,7 +133,8 @@ export default function TopicsPage() {
             </div>
           </div>
 
-          <div className="rounded-md border border-zinc-800 overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block rounded-md border border-zinc-800 overflow-hidden">
             <Table>
               <TableHeader className="bg-zinc-900/50">
                 <TableRow className="hover:bg-zinc-900/50 border-zinc-800">
@@ -220,6 +221,76 @@ export default function TopicsPage() {
                 )}
               </TableBody>
             </Table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {isLoading ? (
+              Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <Card key={i} className="border-zinc-800 bg-zinc-900/50">
+                    <CardContent className="p-4 space-y-3">
+                      <Skeleton className="h-5 w-8 bg-zinc-800" />
+                      <Skeleton className="h-5 w-48 bg-zinc-800" />
+                      <Skeleton className="h-5 w-64 bg-zinc-800" />
+                      <Skeleton className="h-8 w-8 rounded-md bg-zinc-800 ml-auto" />
+                    </CardContent>
+                  </Card>
+                ))
+            ) : selectedCourse ? (
+              filteredTopics.length > 0 ? (
+                filteredTopics
+                  .sort((a, b) => a.order - b.order)
+                  .map((topic) => (
+                    <Card key={topic._id} className="border-zinc-800 bg-zinc-900/50">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-white">{topic.order}.</span>
+                              <Layers className="h-4 w-4 text-indigo-400" />
+                              <h3 className="font-medium text-white">{topic.title}</h3>
+                            </div>
+                            <p className="text-zinc-300 text-sm">{topic.description}</p>
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-300">
+                              <DropdownMenuItem
+                                className="hover:bg-zinc-800 hover:text-white cursor-pointer"
+                                onClick={() => handleEditTopic(topic._id)}
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-red-400 hover:bg-red-900/30 hover:text-red-300 cursor-pointer"
+                                onClick={() => handleDeleteTopic(topic._id)}
+                              >
+                                <Trash className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+              ) : (
+                <div className="text-center text-zinc-500 py-6">
+                  No topics found for this course
+                </div>
+              )
+            ) : (
+              <div className="text-center text-zinc-500 py-6">
+                Please select a course to view topics
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
