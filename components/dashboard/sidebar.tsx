@@ -100,7 +100,7 @@ export function DashboardSidebar() {
           className="bg-zinc-900 border-zinc-800"
           onClick={toggleSidebar}
         >
-          {isOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5" />}
+          {isOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
         </Button>
       </div>
 
