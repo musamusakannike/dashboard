@@ -88,54 +88,166 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          <div className="rounded-md border border-zinc-800 overflow-hidden">
-            <Table>
-              <TableHeader className="bg-zinc-900/50">
-                <TableRow className="hover:bg-zinc-900/50 border-zinc-800">
-                  <TableHead className="text-zinc-400 w-[50%]">Course</TableHead>
-                  <TableHead className="text-zinc-400">Price</TableHead>
-                  <TableHead className="text-zinc-400">Rating</TableHead>
-                  <TableHead className="text-zinc-400">Status</TableHead>
-                  <TableHead className="text-zinc-400 text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  Array(5)
-                    .fill(0)
-                    .map((_, i) => (
-                      <TableRow key={i} className="hover:bg-zinc-900/50 border-zinc-800">
+          {/* Desktop Table View */}
+          <div className="hidden md:block">
+            <div className="rounded-md border border-zinc-800 overflow-hidden">
+              <Table>
+                <TableHeader className="bg-zinc-900/50">
+                  <TableRow className="hover:bg-zinc-900/50 border-zinc-800">
+                    <TableHead className="text-zinc-400 w-[50%]">Course</TableHead>
+                    <TableHead className="text-zinc-400">Price</TableHead>
+                    <TableHead className="text-zinc-400">Rating</TableHead>
+                    <TableHead className="text-zinc-400">Status</TableHead>
+                    <TableHead className="text-zinc-400 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    Array(5)
+                      .fill(0)
+                      .map((_, i) => (
+                        <TableRow key={i} className="hover:bg-zinc-900/50 border-zinc-800">
+                          <TableCell>
+                            <Skeleton className="h-5 w-48 bg-zinc-800" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-5 w-16 bg-zinc-800" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-5 w-24 bg-zinc-800" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-5 w-20 bg-zinc-800" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-8 w-8 rounded-md bg-zinc-800 ml-auto" />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  ) : filteredCourses.length > 0 ? (
+                    filteredCourses.map((course) => (
+                      <TableRow key={course._id} className="hover:bg-zinc-900/50 border-zinc-800">
+                        <TableCell className="font-medium text-white">{course.title}</TableCell>
+                        <TableCell className="text-zinc-300">${course.price}</TableCell>
                         <TableCell>
-                          <Skeleton className="h-5 w-48 bg-zinc-800" />
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                            <span className="text-zinc-300">
+                              {course.ratingStats?.averageRating?.toFixed(1) || "N/A"}
+                            </span>
+                          </div>
                         </TableCell>
                         <TableCell>
-                          <Skeleton className="h-5 w-16 bg-zinc-800" />
+                          <Badge
+                            variant={course.isActive ? "default" : "secondary"}
+                            className={
+                              course.isActive
+                                ? "bg-green-900/30 text-green-400 hover:bg-green-900/40"
+                                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+                            }
+                          >
+                            {course.isActive ? "Active" : "Inactive"}
+                          </Badge>
                         </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-5 w-24 bg-zinc-800" />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-5 w-20 bg-zinc-800" />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-8 w-8 rounded-md bg-zinc-800 ml-auto" />
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-300">
+                              <DropdownMenuItem
+                                className="hover:bg-zinc-800 hover:text-white cursor-pointer"
+                                onClick={() => handleEditCourse(course._id)}
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-red-400 hover:bg-red-900/30 hover:text-red-300 cursor-pointer"
+                                onClick={() => handleDeleteCourse(course._id)}
+                              >
+                                <Trash className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))
-                ) : filteredCourses.length > 0 ? (
-                  filteredCourses.map((course) => (
-                    <TableRow key={course._id} className="hover:bg-zinc-900/50 border-zinc-800">
-                      <TableCell className="font-medium text-white">{course.title}</TableCell>
-                      <TableCell className="text-zinc-300">${course.price}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                          <span className="text-zinc-300">
-                            {course.ratingStats?.averageRating?.toFixed(1) || "N/A"}
-                          </span>
-                        </div>
+                  ) : (
+                    <TableRow className="hover:bg-zinc-900/50 border-zinc-800">
+                      <TableCell colSpan={5} className="text-center text-zinc-500 py-6">
+                        No courses found
                       </TableCell>
-                      <TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {isLoading ? (
+              Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <Card key={i} className="border-zinc-800 bg-zinc-900/50">
+                    <CardContent className="p-4 space-y-3">
+                      <Skeleton className="h-5 w-full bg-zinc-800" />
+                      <div className="flex justify-between">
+                        <Skeleton className="h-4 w-20 bg-zinc-800" />
+                        <Skeleton className="h-4 w-20 bg-zinc-800" />
+                        <Skeleton className="h-4 w-20 bg-zinc-800" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+            ) : filteredCourses.length > 0 ? (
+              filteredCourses.map((course) => (
+                <Card key={course._id} className="border-zinc-800 bg-zinc-900/50">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-medium text-white">{course.title}</h3>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-300">
+                          <DropdownMenuItem
+                            className="hover:bg-zinc-800 hover:text-white cursor-pointer"
+                            onClick={() => handleEditCourse(course._id)}
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-red-400 hover:bg-red-900/30 hover:text-red-300 cursor-pointer"
+                            onClick={() => handleDeleteCourse(course._id)}
+                          >
+                            <Trash className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                      <div className="text-zinc-400">Price</div>
+                      <div className="text-zinc-300">${course.price}</div>
+                      
+                      <div className="text-zinc-400">Rating</div>
+                      <div className="flex items-center gap-1 text-zinc-300">
+                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        {course.ratingStats?.averageRating?.toFixed(1) || "N/A"}
+                      </div>
+                      
+                      <div className="text-zinc-400">Status</div>
+                      <div>
                         <Badge
                           variant={course.isActive ? "default" : "secondary"}
                           className={
@@ -146,43 +258,16 @@ export default function CoursesPage() {
                         >
                           {course.isActive ? "Active" : "Inactive"}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-300">
-                            <DropdownMenuItem
-                              className="hover:bg-zinc-800 hover:text-white cursor-pointer"
-                              onClick={() => handleEditCourse(course._id)}
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-red-400 hover:bg-red-900/30 hover:text-red-300 cursor-pointer"
-                              onClick={() => handleDeleteCourse(course._id)}
-                            >
-                              <Trash className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow className="hover:bg-zinc-900/50 border-zinc-800">
-                    <TableCell colSpan={5} className="text-center text-zinc-500 py-6">
-                      No courses found
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="text-center text-zinc-500 py-6">
+                No courses found
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
